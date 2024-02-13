@@ -1,4 +1,11 @@
 #include <Novice.h>
+#include "MT.h"
+#include"Matrix4x4.h"
+#include"Vector3.h"
+#include"Vector2.h"
+#include<cmath>
+#include <cassert>
+#define _USE_MATH_DEFINES
 
 const char kWindowTitle[] = "学籍番号";
 
@@ -11,6 +18,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// キー入力結果を受け取る箱
 	char keys[256] = {0};
 	char preKeys[256] = {0};
+
+	static const int kRowHeight = 20;
+	static const int kColumnWidth = 60;
+	static const int kWindowWidth = 1280;
+	static const int kWindowHeght = 720;
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
