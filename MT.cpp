@@ -667,3 +667,40 @@ Matrix4x4 MakeQRotateMatrix(const Quaternion& quaternion) {
 
 	return result;
 }
+
+void invertQuaternion(Quaternion* q) {
+	q->w = -q->w;
+	q->x = -q->x;
+	q->y = -q->y;
+	q->z = -q->z;
+}
+
+Quaternion Slerp(Quaternion& q0, Quaternion& q1, float t) {
+	Quaternion result{};
+
+	float dot = (q0.w * q1.w) + (q0.x * q1.x) + (q0.y * q1.y) + (q0.z * q1.z);
+
+	// クォータニオンが逆向きの場合、符号を反転
+	if (dot < 0.0) {
+
+		invertQuaternion(&q1);
+
+		dot = -dot;
+	}
+
+	// 線形補間
+	float theta = std::acosf(dot);
+	float sinTheta = std::sinf(theta);
+	float weight1 = std::sinf((1.0f - t) * theta) / sinTheta;
+	float weight2 = std::sinf(t * theta) / sinTheta;
+
+	result.w = (weight1 * q0.w) + (weight2 * q1.w);
+	result.x = (weight1 * q0.x) + (weight2 * q1.x);
+	result.y = (weight1 * q0.y) + (weight2 * q1.y);
+	result.z = (weight1 * q0.z) + (weight2 * q1.z);
+
+	// 補間結果の正規化
+	NormalizeQuaternion(result);
+
+	return result;
+}
