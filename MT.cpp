@@ -542,3 +542,118 @@ Matrix4x4 DerectionToDerection(const Vector3& from, const Vector3& to)
 
 	return Result;
 }
+
+Quaternion IdentityQuaternion()
+{
+	Quaternion identity;
+
+	identity.w = 1.0f;
+	identity.x = 0.0f;
+	identity.y = 0.0f;
+	identity.z = 0.0f;
+
+	return identity;
+}
+
+Quaternion Conjugate(const Quaternion& quaternion)
+{
+	Quaternion result =
+	{
+		-quaternion.x,
+		-quaternion.y,
+		-quaternion.z,
+		quaternion.w
+	};
+
+	return result;
+}
+
+Quaternion NormalizeQuaternion(const Quaternion& quaternion)
+{
+	Quaternion result = {};
+
+	float norm = Norm(quaternion);
+
+	if (quaternion.x != 0.0f)
+	{
+		result.x = quaternion.x / norm;
+	}
+	else
+	{
+		result.x = 0.0f;
+	}
+
+	if (quaternion.y != 0.0f)
+	{
+		result.y = quaternion.y / norm;
+	}
+	else
+	{
+		result.y = 0.0f;
+	}
+
+	if (quaternion.z != 0.0f)
+	{
+		result.z = quaternion.z / norm;
+	}
+	else
+	{
+		result.z = 0.0f;
+	}
+
+	if (quaternion.w != 0.0f)
+	{
+		result.w = quaternion.w / norm;
+	}
+	else
+	{
+		result.w = 0.0f;
+	}
+
+	return result;
+}
+
+Quaternion InverseQuaternion(const Quaternion& quaternion)
+{
+	Quaternion result = {};
+	Quaternion conjugate = Conjugate(quaternion);
+
+	float norm = Norm(quaternion);
+
+	if (norm != 0.0f) {
+		result.x = conjugate.x / (norm * norm);
+		result.y = conjugate.y / (norm * norm);
+		result.z = conjugate.z / (norm * norm);
+		result.w = conjugate.w / (norm * norm);
+	}
+
+	return result;
+}
+
+float Norm(const Quaternion& quaternion)
+{
+	return sqrt(quaternion.w * quaternion.w
+		+ quaternion.x * quaternion.x
+		+ quaternion.y * quaternion.y
+		+ quaternion.z * quaternion.z);
+}
+
+Quaternion Multiply(Quaternion lns, Quaternion rhs)
+{
+	Quaternion q;
+
+	q.w = lns.w * rhs.w - lns.x * rhs.x -
+		lns.y * rhs.y - lns.z * rhs.z;
+
+	q.x = lns.y * rhs.z - lns.z * rhs.y +
+		rhs.w * lns.x + lns.w * rhs.x;
+
+	q.y = lns.z * rhs.x - lns.x * rhs.z +
+		rhs.w * lns.y + lns.w * rhs.y;
+
+	q.z = lns.x * rhs.y - lns.y * rhs.x +
+		rhs.w * lns.z + lns.w * rhs.z;
+
+	return q;
+
+}
