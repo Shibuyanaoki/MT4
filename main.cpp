@@ -7,7 +7,7 @@
 #include <cassert>
 #define _USE_MATH_DEFINES
 
-const char kWindowTitle[] = "学籍番号";
+const char kWindowTitle[] = "LE2C_12_シブヤ_ナオキ";
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
