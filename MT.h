@@ -8,6 +8,8 @@ Vector3 Subtract(const Vector3& v1, const Vector3& v2);
 
 Vector3 Add(const Vector3& v1, const Vector3& v2);
 
+Matrix4x4 Add(const Matrix4x4& m1, const Matrix4x4& m2);
+
 /// <summary>
 /// X軸回転行列
 /// </summary>
@@ -35,6 +37,8 @@ Matrix4x4 MakeRotateZmatrix(float radian);
 /// <param name="translate"></param>
 /// <returns></returns>
 Matrix4x4 MakeTranslateMatrix(Vector3 translate);
+
+Matrix4x4 MakeIdenttity4x4();
 
 /// <summary>
 /// 拡大縮小
@@ -66,6 +70,11 @@ Vector3 Multiply(const float& v1, const Vector3& v2);
 /// <param name="matrix"></param>
 /// <returns></returns>
 Vector3 Multiply(Vector3 vector, Matrix4x4 matrix);
+
+/// <summary>
+/// 
+/// </summary>
+Matrix4x4 Multiply(float scalar, const Matrix4x4& m);
 
 /// <summary>
 /// アフィン変換
@@ -119,3 +128,7 @@ Matrix4x4 MakeViewPortMatrix(
 
 // 座標返還
 Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix);
+
+Matrix4x4 MakeRotateAxisAngle(const Vector3& axis, float angel);
+
+void MatrixScreenPrintf(int x, int y, const Matrix4x4& matrix, const char* label);

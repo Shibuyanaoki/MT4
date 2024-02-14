@@ -1,4 +1,5 @@
 ﻿#include "MT.h"
+#include "Novice.h"
 #include <math.h>
 
 Vector3 Subtract(const Vector3& v1, const Vector3& v2) {
@@ -14,6 +15,18 @@ Vector3 Add(const Vector3& v1, const Vector3& v2) {
 	result.x = v1.x + v2.x;
 	result.y = v1.y + v2.y;
 	result.z = v1.z + v2.z;
+	return result;
+}
+
+Matrix4x4 Add(const Matrix4x4& m1, const Matrix4x4& m2)
+{
+	Matrix4x4 result;
+
+	for (int y = 0; y < 4; y++) {
+		for (int x = 0; x < 4; x++) {
+			result.m[y][x] = m1.m[y][x] + m2.m[y][x];
+		}
+	}
 	return result;
 }
 
@@ -116,7 +129,34 @@ Matrix4x4 MakeTranslateMatrix(Vector3 translate) {
 	result.m[3][3] = 1.0f;
 
 	return result;
-};
+}
+
+Matrix4x4 MakeIdenttity4x4()
+{
+	Matrix4x4 result;
+
+	result.m[0][0] = 1;
+	result.m[0][1] = 0;
+	result.m[0][2] = 0;
+	result.m[0][3] = 0;
+
+	result.m[1][0] = 0;
+	result.m[1][1] = 1;
+	result.m[1][2] = 0;
+	result.m[1][3] = 0;
+
+	result.m[2][0] = 0;
+	result.m[2][1] = 0;
+	result.m[2][2] = 1;
+	result.m[2][3] = 0;
+
+	result.m[3][0] = 0;
+	result.m[3][1] = 0;
+	result.m[3][2] = 0;
+	result.m[3][3] = 1;
+
+	return result;
+}
 
 // 拡大縮小
 Matrix4x4 MakeScaleMatrix(const Vector3& scale) {
@@ -177,6 +217,18 @@ Vector3 Multiply(Vector3 vector, Matrix4x4 matrix) {
 	result.z = vector.x * matrix.m[2][0] + vector.y * matrix.m[2][1] + vector.z * matrix.m[2][2] +
 	           matrix.m[2][3];
 
+	return result;
+}
+
+Matrix4x4 Multiply(float scalar, const Matrix4x4& m)
+{
+	Matrix4x4 result;
+
+	for (int y = 0; y < 4; y++) {
+		for (int x = 0; x < 4; x++) {
+			result.m[y][x] = scalar * m.m[y][x];
+		}
+	}
 	return result;
 }
 
@@ -382,4 +434,63 @@ Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix) {
 	result.y /= w;
 	result.z /= w;
 	return result;
+}
+
+Matrix4x4 MakeRotateAxisAngle(const Vector3& axis, float angel)
+{
+	Matrix4x4 rS = MakeIdenttity4x4();
+
+	rS.m[0][0] = std::cosf(angel);
+	rS.m[1][1] = std::cosf(angel);
+	rS.m[2][2] = std::cosf(angel);
+
+	Matrix4x4 rP = MakeIdenttity4x4();
+
+	rP.m[0][0] = axis.x * axis.x;
+	rP.m[0][1] = axis.x * axis.y;
+	rP.m[0][2] = axis.x * axis.z;
+
+	rP.m[1][0] = axis.y * axis.x;
+	rP.m[1][1] = axis.y * axis.y;
+	rP.m[1][2] = axis.y * axis.z;
+
+	rP.m[2][0] = axis.z * axis.x;
+	rP.m[2][1] = axis.z * axis.y;
+	rP.m[2][2] = axis.z * axis.z;
+
+	rP.m[3][3] = 0.0f;
+
+	rP = Multiply((1.0f - std::cosf(angel)), rP);
+
+	Matrix4x4 rC = MakeIdenttity4x4();
+
+	rC.m[0][0] = 0.0f;
+	rC.m[0][1] = -axis.z;
+	rC.m[0][2] = axis.y;
+	rC.m[1][0] = axis.z;
+	rC.m[1][1] = 0.0f;
+	rC.m[1][2] = -axis.x;
+	rC.m[2][0] = -axis.y;
+	rC.m[2][1] = axis.x;
+	rC.m[2][2] = 0.0f;
+	rC.m[3][3] = 0.0f;
+
+	rC = Multiply((-std::sinf(angel)), rC);
+
+	Matrix4x4 resultMatrix = Add(Add(rS, rP), rC);
+
+	return resultMatrix;
+}
+
+void MatrixScreenPrintf(int x, int y, const Matrix4x4& matrix, const char* label)
+{
+	for (int row = 0; row < 4; ++row)
+	{
+		for (int column = 0; column < 4; ++column)
+		{
+			Novice::ScreenPrintf(
+				x + column * 60, y + row * 20 + 20, "%6.02f", matrix.m[row][column]);
+		}
+	}
+	Novice::ScreenPrintf(x, y, "%s", label);
 }

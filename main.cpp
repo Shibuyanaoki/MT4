@@ -19,8 +19,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	char keys[256] = {0};
 	char preKeys[256] = {0};
 
-	static const int kRowHeight = 20;
-	static const int kColumnWidth = 60;
 	static const int kWindowWidth = 1280;
 	static const int kWindowHeght = 720;
 
@@ -29,6 +27,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// フレームの開始
 		Novice::BeginFrame();
 
+		Vector3 axis = Normalize({ 1.0f,1.0f,1.0f });
+		float angle = 0.44f;
+
 		// キー入力を受け取る
 		memcpy(preKeys, keys, 256);
 		Novice::GetHitKeyStateAll(keys);
@@ -36,7 +37,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		/// ↓更新処理ここから
 		///
-
+		Matrix4x4 rotateMatrix = MakeRotateAxisAngle(axis, angle);
 		///
 		/// ↑更新処理ここまで
 		///
@@ -44,7 +45,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		/// ↓描画処理ここから
 		///
-
+		MatrixScreenPrintf(0, 0, rotateMatrix, "rotateMatrix");
 		///
 		/// ↑描画処理ここまで
 		///
